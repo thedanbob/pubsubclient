@@ -16,23 +16,23 @@ PubSubClient::PubSubClient(Client& c) :
 {}
 
 PubSubClient::PubSubClient(Client& c, IPAddress &ip, uint16_t port) :
+  server_ip(ip),
+  server_port(port),
   _callback(nullptr),
   _client(c),
   _parser(c),
   _max_retries(10),
-  isSubAckFound(false),
-  server_ip(ip),
-  server_port(port)
+  isSubAckFound(false)
 {}
 
 PubSubClient::PubSubClient(Client& c, String hostname, uint16_t port) :
+  server_hostname(hostname),
+  server_port(port),
   _callback(nullptr),
   _client(c),
   _parser(c),
   _max_retries(10),
-  isSubAckFound(false),
-  server_port(port),
-  server_hostname(hostname)
+  isSubAckFound(false)
 {}
 
 PubSubClient& PubSubClient::set_server(IPAddress &ip, uint16_t port) {
@@ -107,26 +107,26 @@ void PubSubClient::_process_message(MQTT::Message* msg) {
       MQTT::Publish *pub = static_cast<MQTT::Publish*>(msg);	// RTTI is disabled on embedded, so no dynamic_cast<>()
 
       if (_callback)
-	_callback(*pub);
+        _callback(*pub);
 
       if (pub->qos() == 1) {
-	MQTT::PublishAck puback(pub->packet_id());
-	_send_message(puback);
+        MQTT::PublishAck puback(pub->packet_id());
+        _send_message(puback);
 
       } else if (pub->qos() == 2) {
 
-	{
-	  MQTT::PublishRec pubrec(pub->packet_id());
-	  MQTT::Message *response = _send_message_with_response(pubrec);
-	  if (response == nullptr)
-	    return;
-	  delete response;
-	}
+        {
+          MQTT::PublishRec pubrec(pub->packet_id());
+          MQTT::Message *response = _send_message_with_response(pubrec);
+          if (response == nullptr)
+            return;
+          delete response;
+        }
 
-	{
-	  MQTT::PublishComp pubcomp(pub->packet_id());
-	  _send_message(pubcomp);
-	}
+        {
+          MQTT::PublishComp pubcomp(pub->packet_id());
+          _send_message(pubcomp);
+        }
       }
     }
     break;
@@ -140,6 +140,9 @@ void PubSubClient::_process_message(MQTT::Message* msg) {
 
   case MQTT::PINGRESP:
     pingOutstanding = false;
+
+  default:
+    break;
   }
 }
 

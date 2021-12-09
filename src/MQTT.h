@@ -58,7 +58,7 @@ namespace MQTT {
     Reserved,		// Reserved
   };
 
-  //! The Quality of Service (QoS) level is an agreement between sender and receiver of a message regarding the guarantees of delivering a message.  
+  //! The Quality of Service (QoS) level is an agreement between sender and receiver of a message regarding the guarantees of delivering a message.
   enum Qos {
       QOS0 = 0,  //! At most once
       QOS1 = 1,  //! At least once
@@ -268,8 +268,8 @@ namespace MQTT {
   class Publish : public Message {
   protected:
     String _topic;
-    uint8_t *_payload;
     uint32_t _payload_len;
+    uint8_t *_payload;
     bool _payload_mine;
 
     uint32_t variable_header_length(void) const;
@@ -283,7 +283,8 @@ namespace MQTT {
     Publish(String topic, uint8_t* payload, uint32_t length, bool mine) :
       Message(PUBLISH),
       _topic(topic),
-      _payload(payload), _payload_len(length),
+      _payload_len(length),
+      _payload(payload),
       _payload_mine(mine)
     {}
 
@@ -576,4 +577,3 @@ namespace MQTT {
   };
 
 }
-
