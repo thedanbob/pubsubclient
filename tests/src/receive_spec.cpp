@@ -8,6 +8,7 @@
 #define MQTT_MAX_PACKET_SIZE 1024
 
 IPAddress server(172, 16, 0, 2);
+byte connack[] = {0x20,0x02,0x00,0x00};
 
 bool callback_called = false;
 String lastTopic;
@@ -56,9 +57,7 @@ int test_receive_callback() {
 
   ShimClient shimClient;
   shimClient.setAllowConnect(true);
-
-  byte connack[] = { 0x20, 0x02, 0x00, 0x00 };
-  shimClient.respond(connack,4);
+  shimClient.respond(connack, sizeof(connack));
 
   PubSubClient client(shimClient,server, 1883);
   client.set_callback(callback);
@@ -66,7 +65,7 @@ int test_receive_callback() {
   IS_TRUE(rc);
 
   byte publish[] = {0x30,0xe,0x0,0x5,0x74,0x6f,0x70,0x69,0x63,0x70,0x61,0x79,0x6c,0x6f,0x61,0x64};
-  shimClient.respond(publish,16);
+  shimClient.respond(publish, sizeof(publish));
 
   rc = client.loop();
 
@@ -91,9 +90,7 @@ int test_receive_stream() {
 
   ShimClient shimClient;
   shimClient.setAllowConnect(true);
-
-  byte connack[] = { 0x20, 0x02, 0x00, 0x00 };
-  shimClient.respond(connack,4);
+  shimClient.respond(connack, sizeof(connack));
 
   PubSubClient client(shimClient, server, 1883); // stream?
   client.set_callback(callback);
@@ -101,7 +98,7 @@ int test_receive_stream() {
   IS_TRUE(rc);
 
   byte publish[] = {0x30,0xe,0x0,0x5,0x74,0x6f,0x70,0x69,0x63,0x70,0x61,0x79,0x6c,0x6f,0x61,0x64};
-  shimClient.respond(publish,16);
+  shimClient.respond(publish, sizeof(publish));
 
   rc = client.loop();
 
@@ -123,9 +120,7 @@ int test_receive_max_sized_message() {
 
   ShimClient shimClient;
   shimClient.setAllowConnect(true);
-
-  byte connack[] = { 0x20, 0x02, 0x00, 0x00 };
-  shimClient.respond(connack,4);
+  shimClient.respond(connack, sizeof(connack));
 
   PubSubClient client(shimClient,server, 1883);
   client.set_callback(callback);
@@ -166,9 +161,7 @@ int test_receive_oversized_message() {
 
   ShimClient shimClient;
   shimClient.setAllowConnect(true);
-
-  byte connack[] = { 0x20, 0x02, 0x00, 0x00 };
-  shimClient.respond(connack,4);
+  shimClient.respond(connack, sizeof(connack));
 
   PubSubClient client(shimClient,server, 1883);
   client.set_callback(callback);
@@ -208,9 +201,7 @@ int test_receive_oversized_stream_message() {
 
   ShimClient shimClient;
   shimClient.setAllowConnect(true);
-
-  byte connack[] = { 0x20, 0x02, 0x00, 0x00 };
-  shimClient.respond(connack,4);
+  shimClient.respond(connack, sizeof(connack));
 
   PubSubClient client(shimClient, server, 1883); // stream?
   client.set_callback(callback);
@@ -253,9 +244,7 @@ int test_receive_qos1() {
 
   ShimClient shimClient;
   shimClient.setAllowConnect(true);
-
-  byte connack[] = { 0x20, 0x02, 0x00, 0x00 };
-  shimClient.respond(connack,4);
+  shimClient.respond(connack, sizeof(connack));
 
   PubSubClient client(shimClient,server, 1883);
   client.set_callback(callback);
@@ -263,10 +252,10 @@ int test_receive_qos1() {
   IS_TRUE(rc);
 
   byte publish[] = {0x32,0x10,0x0,0x5,0x74,0x6f,0x70,0x69,0x63,0x12,0x34,0x70,0x61,0x79,0x6c,0x6f,0x61,0x64};
-  shimClient.respond(publish,18);
+  shimClient.respond(publish, sizeof(publish));
 
   byte puback[] = {0x40,0x2,0x12,0x34};
-  shimClient.expect(puback,4);
+  shimClient.expect(puback, sizeof(puback));
 
   rc = client.loop();
 
@@ -282,8 +271,7 @@ int test_receive_qos1() {
   END_IT
 }
 
-int main()
-{
+int main() {
   test_receive_callback();
   test_receive_stream();
   test_receive_max_sized_message();

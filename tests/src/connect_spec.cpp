@@ -6,6 +6,7 @@
 
 
 IPAddress server(172, 16, 0, 2);
+byte connack[] = {0x20,0x02,0x00,0x00};
 
 void callback(const MQTT::Publish& pub) {
   // handle message arrived
@@ -50,10 +51,9 @@ int test_connect_properly_formatted() {
     0x00,0x0f, // keepalives
     0x0,0xc,0x63,0x6c,0x69,0x65,0x6e,0x74,0x5f,0x74,0x65,0x73,0x74,0x31 // client id
   };
-  byte connack[] = { 0x20, 0x02, 0x00, 0x00 };
 
-  shimClient.expect(connect,28);
-  shimClient.respond(connack,4);
+  shimClient.expect(connect, sizeof(connect));
+  shimClient.respond(connack, sizeof(connack));
 
   PubSubClient client(shimClient,server, 1883);
   client.set_callback(callback);
@@ -70,8 +70,7 @@ int test_connect_properly_formatted_hostname() {
 
   shimClient.setAllowConnect(true);
   shimClient.expectConnect((char* const)"localhost",1883);
-  byte connack[] = { 0x20, 0x02, 0x00, 0x00 };
-  shimClient.respond(connack,4);
+  shimClient.respond(connack, sizeof(connack));
 
   PubSubClient client(shimClient, "localhost", 1883);
   client.set_callback(callback);
@@ -87,8 +86,7 @@ int test_connect_fails_on_bad_rc() {
   IT("fails to connect if a bad return code is received");
   ShimClient shimClient;
   shimClient.setAllowConnect(true);
-  byte connack[] = { 0x20, 0x02, 0x00, 0x01 };
-  shimClient.respond(connack,4);
+  shimClient.respond(connack, sizeof(connack));
 
   PubSubClient client(shimClient,server, 1883);
   client.set_callback(callback);
@@ -113,9 +111,8 @@ int test_connect_accepts_username_password() {
     0x0,0x4,0x75,0x73,0x65,0x72, // username
     0x0,0x4,0x70,0x61,0x73,0x73 // password
   };
-  byte connack[] = { 0x20, 0x02, 0x00, 0x00 };
-  shimClient.expect(connect,0x28);
-  shimClient.respond(connack,4);
+  shimClient.expect(connect, sizeof(connect));
+  shimClient.respond(connack, sizeof(connack));
 
   PubSubClient client(shimClient,server, 1883);
   client.set_callback(callback);
@@ -142,9 +139,8 @@ int test_connect_accepts_username_no_password() {
     0x0,0xc,0x63,0x6c,0x69,0x65,0x6e,0x74,0x5f,0x74,0x65,0x73,0x74,0x31, // client id
     0x0,0x4,0x75,0x73,0x65,0x72 // username
   };
-  byte connack[] = { 0x20, 0x02, 0x00, 0x00 };
-  shimClient.expect(connect,0x22);
-  shimClient.respond(connack,4);
+  shimClient.expect(connect, sizeof(connect));
+  shimClient.respond(connack, sizeof(connack));
 
   PubSubClient client(shimClient,server, 1883);
   client.set_callback(callback);
@@ -170,9 +166,8 @@ int test_connect_ignores_password_no_username() {
     0x0,0xf,  // keepalives
     0x0,0xc,0x63,0x6c,0x69,0x65,0x6e,0x74,0x5f,0x74,0x65,0x73,0x74,0x31 // client id
   };
-  byte connack[] = { 0x20, 0x02, 0x00, 0x00 };
-  shimClient.expect(connect,28);
-  shimClient.respond(connack,4);
+  shimClient.expect(connect, sizeof(connect));
+  shimClient.respond(connack, sizeof(connack));
 
   PubSubClient client(shimClient,server, 1883);
   client.set_callback(callback);
@@ -200,9 +195,8 @@ int test_connect_with_will() {
     0x0,0x9,0x77,0x69,0x6c,0x6c,0x54,0x6f,0x70,0x69,0x63, // will topic
     0x0,0xb,0x77,0x69,0x6c,0x6c,0x4d,0x65,0x73,0x73,0x61,0x67,0x65 // will message
   };
-  byte connack[] = { 0x20, 0x02, 0x00, 0x00 };
-  shimClient.expect(connect,0x34);
-  shimClient.respond(connack,4);
+  shimClient.expect(connect, sizeof(connect));
+  shimClient.respond(connack, sizeof(connack));
 
   PubSubClient client(shimClient,server, 1883);
   client.set_callback(callback);
@@ -232,9 +226,8 @@ int test_connect_with_will_username_password() {
     0x0,0x4,0x75,0x73,0x65,0x72, // username
     0x0,0x8,0x70,0x61,0x73,0x73,0x77,0x6f,0x72,0x64 // password
   };
-  byte connack[] = { 0x20, 0x02, 0x00, 0x00 };
-  shimClient.expect(connect,0x44);
-  shimClient.respond(connack,4);
+  shimClient.expect(connect, sizeof(connect));
+  shimClient.respond(connack, sizeof(connack));
 
   PubSubClient client(shimClient,server, 1883);
   client.set_callback(callback);
@@ -263,10 +256,8 @@ int test_connect_disconnect_connect() {
     0x0,0xf, // keepalives
     0x0,0xc,0x63,0x6c,0x69,0x65,0x6e,0x74,0x5f,0x74,0x65,0x73,0x74,0x31 // client id
   };
-  byte connack[] = { 0x20, 0x02, 0x00, 0x00 };
-
-  shimClient.expect(connect,28);
-  shimClient.respond(connack,4);
+  shimClient.expect(connect, sizeof(connect));
+  shimClient.respond(connack, sizeof(connack));
 
   PubSubClient client(shimClient,server, 1883);
   client.set_callback(callback);
@@ -274,8 +265,8 @@ int test_connect_disconnect_connect() {
   IS_TRUE(rc);
   IS_FALSE(shimClient.error());
 
-  byte disconnect[] = {0xE0,0x00};
-  shimClient.expect(disconnect,2);
+  byte disconnect[] = {0xe0,0x00};
+  shimClient.expect(disconnect, sizeof(disconnect));
 
   client.disconnect();
 
@@ -292,8 +283,7 @@ int test_connect_disconnect_connect() {
   END_IT
 }
 
-int main()
-{
+int main() {
   test_connect_fails_no_network();
   test_connect_fails_on_no_response();
   test_connect_properly_formatted();

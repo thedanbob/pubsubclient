@@ -7,6 +7,9 @@
 
 
 IPAddress server(172, 16, 0, 2);
+byte connack[] = { 0x20, 0x02, 0x00, 0x00 };
+byte pingreq[] = { 0xc0, 0x0 };
+byte pingresp[] = { 0xd0, 0x0 };
 
 void callback(const MQTT::Publish& pub) {
   // handle message arrived
@@ -18,21 +21,18 @@ int test_keepalive_pings_idle() {
 
   ShimClient shimClient;
   shimClient.setAllowConnect(true);
-
-  byte connack[] = { 0x20, 0x02, 0x00, 0x00 };
-  shimClient.respond(connack,4);
+  shimClient.respond(connack, sizeof(connack));
 
   PubSubClient client(shimClient,server, 1883);
   client.set_callback(callback);
   int rc = client.connect("client_test1");
   IS_TRUE(rc);
 
-  byte pingreq[] = { 0xC0,0x0 };
-  shimClient.expect(pingreq,2);
-  byte pingresp[] = { 0xD0,0x0 };
-  shimClient.respond(pingresp,2);
-
   for (int i = 0; i < 50; i++) {
+    if ( i == 15 || i == 31 || i == 47) {
+      shimClient.expect(pingreq, sizeof(pingreq));
+      shimClient.respond(pingresp, sizeof(pingresp));
+    }
     sleep(1);
     rc = client.loop();
     IS_TRUE(rc);
@@ -48,9 +48,7 @@ int test_keepalive_pings_with_outbound_qos0() {
 
   ShimClient shimClient;
   shimClient.setAllowConnect(true);
-
-  byte connack[] = { 0x20, 0x02, 0x00, 0x00 };
-  shimClient.respond(connack,4);
+  shimClient.respond(connack, sizeof(connack));
 
   PubSubClient client(shimClient,server, 1883);
   client.set_callback(callback);
@@ -61,16 +59,14 @@ int test_keepalive_pings_with_outbound_qos0() {
 
   for (int i = 0; i < 50; i++) {
     TRACE(i<<":");
-    shimClient.expect(publish,16);
+    shimClient.expect(publish, sizeof(publish));
     rc = client.publish((char*)"topic",(char*)"payload");
     IS_TRUE(rc);
     IS_FALSE(shimClient.error());
     sleep(1);
     if ( i == 15 || i == 31 || i == 47) {
-      byte pingreq[] = { 0xC0,0x0 };
-      shimClient.expect(pingreq,2);
-      byte pingresp[] = { 0xD0,0x0 };
-      shimClient.respond(pingresp,2);
+      shimClient.expect(pingreq, sizeof(pingreq));
+      shimClient.respond(pingresp, sizeof(pingresp));
     }
     rc = client.loop();
     IS_TRUE(rc);
@@ -85,9 +81,7 @@ int test_keepalive_pings_with_inbound_qos0() {
 
   ShimClient shimClient;
   shimClient.setAllowConnect(true);
-
-  byte connack[] = { 0x20, 0x02, 0x00, 0x00 };
-  shimClient.respond(connack,4);
+  shimClient.respond(connack, sizeof(connack));
 
   PubSubClient client(shimClient,server, 1883);
   client.set_callback(callback);
@@ -100,12 +94,10 @@ int test_keepalive_pings_with_inbound_qos0() {
     TRACE(i<<":");
     sleep(1);
     if ( i == 15 || i == 31 || i == 47) {
-      byte pingreq[] = { 0xC0,0x0 };
-      shimClient.expect(pingreq,2);
-      byte pingresp[] = { 0xD0,0x0 };
-      shimClient.respond(pingresp,2);
+      shimClient.expect(pingreq, sizeof(pingreq));
+      shimClient.respond(pingresp, sizeof(pingresp));
     }
-    shimClient.respond(publish,16);
+    shimClient.respond(publish, sizeof(publish));
     rc = client.loop();
     IS_TRUE(rc);
     IS_FALSE(shimClient.error());
@@ -121,7 +113,7 @@ int test_keepalive_no_pings_inbound_qos1() {
   shimClient.setAllowConnect(true);
 
   byte connack[] = { 0x20, 0x02, 0x00, 0x00 };
-  shimClient.respond(connack,4);
+  shimClient.respond(connack, sizeof(connack));
 
   PubSubClient client(shimClient,server, 1883);
   client.set_callback(callback);
@@ -132,8 +124,8 @@ int test_keepalive_no_pings_inbound_qos1() {
   byte puback[] = {0x40,0x2,0x12,0x34};
 
   for (int i = 0; i < 50; i++) {
-    shimClient.respond(publish,18);
-    shimClient.expect(puback,4);
+    shimClient.respond(publish, sizeof(publish));
+    shimClient.expect(puback, sizeof(puback));
     sleep(1);
     rc = client.loop();
     IS_TRUE(rc);
@@ -149,16 +141,14 @@ int test_keepalive_disconnects_hung() {
   ShimClient shimClient;
   shimClient.setAllowConnect(true);
 
-  byte connack[] = { 0x20, 0x02, 0x00, 0x00 };
-  shimClient.respond(connack,4);
+  shimClient.respond(connack, sizeof(connack));
 
   PubSubClient client(shimClient,server, 1883);
   client.set_callback(callback);
   int rc = client.connect("client_test1");
   IS_TRUE(rc);
 
-  byte pingreq[] = { 0xC0,0x0 };
-  shimClient.expect(pingreq,2);
+  shimClient.expect(pingreq, sizeof(pingreq));
 
   for (int i = 0; i < 32; i++) {
     sleep(1);
@@ -171,8 +161,7 @@ int test_keepalive_disconnects_hung() {
   END_IT
 }
 
-int main()
-{
+int main() {
   test_keepalive_pings_idle();
   test_keepalive_pings_with_outbound_qos0();
   test_keepalive_pings_with_inbound_qos0();
