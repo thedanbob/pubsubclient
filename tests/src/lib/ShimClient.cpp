@@ -56,7 +56,7 @@ int ShimClient::connect(const char *host, uint16_t port)  {
       TRACE( "port mismatch\n");
       _error = true;
     }
-    
+
   }
 
   return _connected;
@@ -69,8 +69,8 @@ size_t ShimClient::write(uint8_t b)  {
     if (_expectBuffer->available()) {
       uint8_t expected = _expectBuffer->next();
       if (expected != b) {
-	_error = true;
-	TRACE("!=" << (unsigned int)expected);
+        _error = true;
+        TRACE("!=" << (unsigned int)expected);
       }
     } else
       _error = true;
@@ -86,23 +86,23 @@ size_t ShimClient::write(const uint8_t *buf, size_t size)  {
     if (i > 0)
       TRACE(":");
     TRACE(std::hex << (unsigned int)(buf[i]));
-        
+
     if (!_expectAnything)
       if (_expectBuffer->available()) {
-	uint8_t expected = _expectBuffer->next();
-	if (expected != buf[i]) {
-	  _error = true;
-	  TRACE("!=" << (unsigned int)expected);
-	}
+        uint8_t expected = _expectBuffer->next();
+        if (expected != buf[i]) {
+          _error = true;
+          TRACE("!=" << (unsigned int)expected);
+        }
       } else
-	_error = true;
+        _error = true;
   }
   TRACE("\n"<<std::dec);
 
   return size;
 }
 
-int ShimClient::read(uint8_t *buf, size_t size) { 
+int ShimClient::read(uint8_t *buf, size_t size) {
   for (size_t i = 0; i < size; i++)
     buf[i] = read();
   return size;
@@ -128,4 +128,3 @@ void ShimClient::expectConnect(const char *host, uint16_t port) {
   _expectedHost = host;
   _expectedPort = port;
 }
-

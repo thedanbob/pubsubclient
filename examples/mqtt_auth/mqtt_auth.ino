@@ -1,6 +1,6 @@
 /*
  Basic MQTT example with Authentication
- 
+
   - connects to an MQTT server, providing username
     and password
   - publishes "hello world" to the topic "outTopic"
@@ -10,8 +10,8 @@
 #include <ESP8266WiFi.h>
 #include <PubSubClient.h>
 
-const char *ssid =	"xxxxxxxx";		// cannot be longer than 32 characters!
-const char *pass =	"yyyyyyyy";		//
+const char *ssid = "xxxxxxxx"; // cannot be longer than 32 characters!
+const char *pass = "yyyyyyyy";
 
 // Update these with values suitable for your network.
 IPAddress server(172, 16, 0, 2);
@@ -46,14 +46,13 @@ void loop() {
   if (WiFi.status() == WL_CONNECTED) {
     if (!client.connected()) {
       Serial.println("Connecting to MQTT server");
-      if (client.connect(MQTT::Connect("arduinoClient")
-			 .set_auth("testeruser", "testpass"))) {
+      if (client.connect(MQTT::Connect("arduinoClient").set_auth("testeruser", "testpass"))) {
         Serial.println("Connected to MQTT server");
-	client.set_callback(callback);
-	client.publish("outTopic","hello world");
-	client.subscribe("inTopic");
+        client.set_callback(callback);
+        client.publish("outTopic","hello world");
+        client.subscribe("inTopic");
       } else {
-        Serial.println("Could not connect to MQTT server");   
+        Serial.println("Could not connect to MQTT server");
       }
     }
 
@@ -61,4 +60,3 @@ void loop() {
       client.loop();
   }
 }
-

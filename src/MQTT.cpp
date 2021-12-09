@@ -141,7 +141,7 @@ namespace MQTT {
       uint8_t digit = rlength & 0x7f;
       rlength >>= 7;
       if (rlength)
-	digit |= 0x80;
+        digit |= 0x80;
       buf[bufpos++] = digit;
     } while (rlength);
   }
@@ -207,12 +207,12 @@ namespace MQTT {
     {
       uint8_t digit;
       do {
-	if (_client.available() < 1)
-	  return false;
+        if (_client.available() < 1)
+          return false;
 
-	digit = read<uint8_t>(_client);
-	_remaining_length += (digit & 0x7f) << _length_shifter;
-	_length_shifter += 7;
+        digit = read<uint8_t>(_client);
+        _remaining_length += (digit & 0x7f) << _length_shifter;
+        _length_shifter += 7;
       } while (digit & 0x80);
     }
     _to_read = _remaining_length;
@@ -239,7 +239,7 @@ namespace MQTT {
     while ((_to_read > 0) && (_client.available() > 0)) {
       int read_size = _client.read(_read_point, _to_read);
       if (read_size == -1)
-	return false;
+        return false;
       _to_read -= read_size;
       _read_point += read_size;
     }
@@ -256,15 +256,15 @@ namespace MQTT {
     if (_remaining_length > MQTT_TOO_BIG) {
       switch (_type) {
       case PUBLISH:
-	_msg = new Publish(_flags, _client, _remaining_length);
-	break;
+        _msg = new Publish(_flags, _client, _remaining_length);
+        break;
 
       case SUBACK:
-	_msg = new SubscribeAck(_client, _remaining_length);
-	break;
+        _msg = new SubscribeAck(_client, _remaining_length);
+        break;
 
       default:
-	_msg = nullptr;
+        _msg = nullptr;
       }
       _state = State::HaveObject;
       return true;
@@ -323,35 +323,35 @@ namespace MQTT {
     while (_state != State::HaveObject) {
       switch (_state) {
       case State::ReadTypeFlags:
-	if (!_read_type_flags())
-	  return nullptr;
+        if (!_read_type_flags())
+          return nullptr;
 
-	break;
+        break;
 
       case State::ReadLength:
-	if (!_read_length())
-	  return nullptr;
+        if (!_read_length())
+          return nullptr;
 
-	break;
+        break;
 
       case State::ReadContents:
-	if (!_read_remaining())
-	  return nullptr;
+        if (!_read_remaining())
+          return nullptr;
 
-	break;
+        break;
 
       case State::CreateObject:
-	if (!_construct_object())
-	  return nullptr;
+        if (!_construct_object())
+          return nullptr;
 
         break;
 
       default:
-	break;
+        break;
       }
     }
 
-    _state = State::Start;	// Reset the parser state machine
+    _state = State::Start; // Reset the parser state machine
     return _msg;
   }
 
@@ -405,10 +405,10 @@ namespace MQTT {
   }
 
   void Connect::write_variable_header(uint8_t *buf, uint32_t& bufpos) const {
-    write(buf, bufpos, "MQTT");	// Protocol name
-    buf[bufpos++] = 4;		// Protocol level
+    write(buf, bufpos, "MQTT"); // Protocol name
+    buf[bufpos++] = 4;          // Protocol level
+    buf[bufpos] = 0;            // Connect flags
 
-    buf[bufpos] = 0;		// Connect flags
     if (_clean_session)
       buf[bufpos] |= 0x02;
 
@@ -416,20 +416,20 @@ namespace MQTT {
       buf[bufpos] |= 0x04;
 
       if (_will_qos > 2)
-	buf[bufpos] |= 2 << 3;
+        buf[bufpos] |= 2 << 3;
       else
-	buf[bufpos] |= _will_qos << 3;
+        buf[bufpos] |= _will_qos << 3;
       buf[bufpos] |= _will_retain << 5;
     }
 
     if (_username.length()) {
       buf[bufpos] |= 0x80;
       if (_password.length())
-	buf[bufpos] |= 0x40;
+        buf[bufpos] |= 0x40;
     }
     bufpos++;
 
-    write(buf, bufpos, _keepalive);	// Keepalive period
+    write(buf, bufpos, _keepalive); // Keepalive period
   }
 
   uint32_t Connect::payload_length(void) const {
@@ -441,7 +441,7 @@ namespace MQTT {
     if (_username.length()) {
       len += 2 + _username.length();
       if (_password.length())
-	len += 2 + _password.length();
+        len += 2 + _password.length();
     }
     return len;
   }
@@ -457,7 +457,7 @@ namespace MQTT {
     if (_username.length()) {
       write(buf, bufpos, _username);
       if (_password.length())
-	write(buf, bufpos, _password);
+        write(buf, bufpos, _password);
     }
   }
 
@@ -757,7 +757,7 @@ namespace MQTT {
     if (_num_rcs > 0) {
       _rcs = new uint8_t[_num_rcs];
       for (uint32_t i = 0; i < _num_rcs; i++)
-	_rcs[i] = read<uint8_t>(data, pos);
+        _rcs[i] = read<uint8_t>(data, pos);
     }
   }
 

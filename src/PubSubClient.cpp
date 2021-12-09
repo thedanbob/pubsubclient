@@ -104,7 +104,7 @@ void PubSubClient::_process_message(MQTT::Message* msg) {
   switch (msg->type()) {
   case MQTT::PUBLISH:
     {
-      MQTT::Publish *pub = static_cast<MQTT::Publish*>(msg);	// RTTI is disabled on embedded, so no dynamic_cast<>()
+      MQTT::Publish *pub = static_cast<MQTT::Publish*>(msg); // RTTI is disabled on embedded, so no dynamic_cast<>()
 
       if (_callback)
         _callback(*pub);
@@ -158,11 +158,11 @@ MQTT::Message* PubSubClient::_wait_for(MQTT::message_type wait_type, uint16_t wa
     MQTT::Message *msg = _recv_message();
     if (msg != nullptr) {
       if (msg->type() == wait_type) {
-	if ((wait_pid > 0) && (msg->packet_id() != wait_pid)) {
-	  delete msg;
-	  return nullptr;
-	}
-	return msg;
+        if ((wait_pid > 0) && (msg->packet_id() != wait_pid)) {
+          delete msg;
+          return nullptr;
+        }
+        return msg;
       } else if (msg->type() == MQTT::SUBACK) { // if the current message is not the one we want
         // Signal that we found a SUBACK message
         isSubAckFound = true;
@@ -215,9 +215,9 @@ bool PubSubClient::connect(MQTT::Connect &conn) {
   }
 
   pingOutstanding = false;
-  nextMsgId = 1;		// Init the next packet id
-  lastInActivity = millis();	// Init this so that _wait_for() doesn't think we've already timed-out
-  keepalive = conn.keepalive();	// Store the keepalive period from this connection
+  nextMsgId = 1;                // Init the next packet id
+  lastInActivity = millis();    // Init this so that _wait_for() doesn't think we've already timed-out
+  keepalive = conn.keepalive(); // Store the keepalive period from this connection
 
   MQTT::Message *response = _send_message_with_response(conn);
   if (response == nullptr) {
@@ -250,7 +250,7 @@ bool PubSubClient::loop() {
     } else {
       MQTT::Ping ping;
       if (!_send_message(ping))
-	return false;
+        return false;
 
       lastInActivity = lastOutActivity;
       pingOutstanding = true;
@@ -323,14 +323,14 @@ bool PubSubClient::publish(MQTT::Publish &pub) {
     {
       response =_send_message_with_response(pub);
       if (response == nullptr)
-	return false;
+        return false;
 
       delete response;
 
       MQTT::PublishRel pubrel(pub.packet_id());
       response = _send_message_with_response(pubrel);
       if (response == nullptr)
-	return false;
+        return false;
 
       delete response;
       return true;

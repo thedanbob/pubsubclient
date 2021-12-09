@@ -41,28 +41,28 @@ namespace MQTT {
 
   enum message_type {
     None,
-    CONNECT,		// Client request to connect to Server
-    CONNACK,		// Connect Acknowledgment
-    PUBLISH,		// Publish message
-    PUBACK,		// Publish Acknowledgment
-    PUBREC,		// Publish Received (assured delivery part 1)
-    PUBREL,		// Publish Release (assured delivery part 2)
-    PUBCOMP,		// Publish Complete (assured delivery part 3)
-    SUBSCRIBE,		// Client Subscribe request
-    SUBACK,		// Subscribe Acknowledgment
-    UNSUBSCRIBE,	// Client Unsubscribe request
-    UNSUBACK,		// Unsubscribe Acknowledgment
-    PINGREQ,		// PING Request
-    PINGRESP,		// PING Response
-    DISCONNECT,		// Client is Disconnecting
-    Reserved,		// Reserved
+    CONNECT,      // Client request to connect to Server
+    CONNACK,      // Connect Acknowledgment
+    PUBLISH,      // Publish message
+    PUBACK,       // Publish Acknowledgment
+    PUBREC,       // Publish Received (assured delivery part 1)
+    PUBREL,       // Publish Release (assured delivery part 2)
+    PUBCOMP,      // Publish Complete (assured delivery part 3)
+    SUBSCRIBE,    // Client Subscribe request
+    SUBACK,       // Subscribe Acknowledgment
+    UNSUBSCRIBE,  // Client Unsubscribe request
+    UNSUBACK,     // Unsubscribe Acknowledgment
+    PINGREQ,      // PING Request
+    PINGRESP,     // PING Response
+    DISCONNECT,   // Client is Disconnecting
+    Reserved,     // Reserved
   };
 
   //! The Quality of Service (QoS) level is an agreement between sender and receiver of a message regarding the guarantees of delivering a message.
   enum Qos {
-      QOS0 = 0,  //! At most once
-      QOS1 = 1,  //! At least once
-      QOS2 = 2   //! Exactly once
+      QOS0 = 0, //! At most once
+      QOS1 = 1, //! At least once
+      QOS2 = 2  //! Exactly once
   };
 
 #ifdef _GLIBCXX_FUNCTIONAL
@@ -76,7 +76,7 @@ namespace MQTT {
   protected:
     message_type _type;
     uint8_t _flags;
-    uint16_t _packet_id;	//! Not all message types use a packet id, but most do
+    uint16_t _packet_id;  //! Not all message types use a packet id, but most do
     bool _need_packet_id;
     Client* _stream_client;
     payload_callback_t _payload_callback;
@@ -142,7 +142,7 @@ namespace MQTT {
     //! Message type to expect in response to this message
     virtual message_type response_type(void) const { return None; }
 
-    friend PubSubClient;	// Just to allow it to call response_type()
+    friend PubSubClient; // Just to allow it to call response_type()
 
   public:
     //! Send the message out
@@ -164,11 +164,11 @@ namespace MQTT {
   private:
     enum class State {
       Start,
-	ReadTypeFlags = 0,
-	ReadLength,
-	ReadContents,
-	CreateObject,
-	HaveObject,
+      ReadTypeFlags = 0,
+      ReadLength,
+      ReadContents,
+      CreateObject,
+      HaveObject,
     };
 
     Client &_client;
@@ -221,26 +221,26 @@ namespace MQTT {
     Connect(String cid);
 
     //! Set the "clear session" flag
-    Connect& set_clean_session(bool cs = true)	{ _clean_session = cs; return *this; }
+    Connect& set_clean_session(bool cs = true) { _clean_session = cs; return *this; }
     //! Unset the "clear session" flag
-    Connect& unset_clean_session(void)		{ _clean_session = false; return *this; }
+    Connect& unset_clean_session(void) { _clean_session = false; return *this; }
 
     //! Set the "will" flag and associated attributes
     Connect& set_will(String willTopic, String willMessage, uint8_t willQos = 0, bool willRetain = false);
     //! Set the "will" flag and attributes, with an arbitrary will message
     Connect& set_will(String willTopic, uint8_t *willMessage, uint16_t willMessageLength, uint8_t willQos = 0, bool willRetain = false);
     //! Unset the "will" flag and associated attributes
-    Connect& unset_will(void)			{ _will_topic = ""; return *this; }
+    Connect& unset_will(void) { _will_topic = ""; return *this; }
 
     //! Set the username and password for authentication
-    Connect& set_auth(String u, String p)	{ _username = u; _password = p; return *this; }
+    Connect& set_auth(String u, String p) { _username = u; _password = p; return *this; }
     //! Unset the username and password for authentication
-    Connect& unset_auth(void)			{ _username = ""; _password = ""; return *this; }
+    Connect& unset_auth(void) { _username = ""; _password = ""; return *this; }
 
     //! Get the keepalive period
-    uint16_t keepalive(void) const	{ return _keepalive; }
+    uint16_t keepalive(void) const { return _keepalive; }
     //! Set the keepalive period
-    Connect& set_keepalive(uint16_t k)	{ _keepalive = k; return *this; }
+    Connect& set_keepalive(uint16_t k) { _keepalive = k; return *this; }
 
     ~Connect();
 
@@ -330,25 +330,25 @@ namespace MQTT {
     ~Publish();
 
     //! Get retain flag
-    bool retain(void) const		{ return _flags & 0x01; }
+    bool retain(void) const { return _flags & 0x01; }
     //! Set retain flag
-    Publish& set_retain(bool r = true)	{ _flags = (_flags & ~0x01) | r; return *this; }
+    Publish& set_retain(bool r = true) { _flags = (_flags & ~0x01) | r; return *this; }
     //! Unset retain flag
-    Publish& unset_retain(void)		{ _flags = _flags & ~0x01; return *this; }
+    Publish& unset_retain(void) { _flags = _flags & ~0x01; return *this; }
 
     //! Get QoS value
-    uint8_t qos(void) const		{ return (_flags >> 1) & 0x03; }
+    uint8_t qos(void) const { return (_flags >> 1) & 0x03; }
     //! Set QoS value
     Publish& set_qos(uint8_t q);
     //! Unset QoS value
-    Publish& unset_qos(void)		{ _flags &= ~0x06; _need_packet_id = false; return *this; }
+    Publish& unset_qos(void) { _flags &= ~0x06; _need_packet_id = false; return *this; }
 
     //! Get dup flag
-    bool dup(void) const		{ return (_flags >> 3) & 0x01; }
+    bool dup(void) const { return (_flags >> 3) & 0x01; }
     //! Set dup flag
-    Publish& set_dup(bool d = true)	{ _flags = (_flags & ~0x08) | (d ? 0x08 : 0); return *this; }
+    Publish& set_dup(bool d = true) { _flags = (_flags & ~0x08) | (d ? 0x08 : 0); return *this; }
     //! Unset dup flag
-    Publish& unset_dup(void)		{ _flags = _flags & ~0x08; return *this; }
+    Publish& unset_dup(void) { _flags = _flags & ~0x08; return *this; }
 
     //! Get the topic string
     String topic(void) const { return _topic; }

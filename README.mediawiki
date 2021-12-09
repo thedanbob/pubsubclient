@@ -35,7 +35,7 @@ You can use the MQTT classes and their chainable setter methods like this:
 
  client.subscribe(MQTT::Subscribe()
                   .add_topic("topic1")
-                  .add_topic("topic2", 1)	// optional qos value
+                  .add_topic("topic2", 1) // optional qos value
                  );
 
  client.unsubscribe(MQTT::Unsubscribe()

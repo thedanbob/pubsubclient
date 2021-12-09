@@ -75,13 +75,13 @@ void loop() {
     if (!client.connected()) {
       // Give ourselves a unique client name
       if (client.connect(WiFi.macAddress())) {
-	client.set_callback(receive_ota);   // Register our callback for receiving OTA's
-	IPAddress local = WiFi.localIP();
-	String ipaddr = String(local[0]) + "." + String(local[1]) + "." + String(local[2]) + "." + String(local[3]);
-	String topic = "ota/" + ipaddr;
-	Serial.print("Subscribing to topic ");
-	Serial.println(topic);
-	client.subscribe(topic);
+        client.set_callback(receive_ota);   // Register our callback for receiving OTA's
+        IPAddress local = WiFi.localIP();
+        String ipaddr = String(local[0]) + "." + String(local[1]) + "." + String(local[2]) + "." + String(local[3]);
+        String topic = "ota/" + ipaddr;
+        Serial.print("Subscribing to topic ");
+        Serial.println(topic);
+        client.subscribe(topic);
       }
     }
 

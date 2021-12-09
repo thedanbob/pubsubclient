@@ -31,12 +31,12 @@ namespace MQTT {
       _will_retain = willRetain;
 
       if (_will_message != nullptr)
-	delete [] _will_message;
+        delete [] _will_message;
 
       _will_message_len = measureJson(willMessage);
       _will_message = new uint8_t[_will_message_len + 1];
       if (_will_message != nullptr)
-	serializeJson(willMessage, _will_message, _will_message_len + 1);
+        serializeJson(willMessage, _will_message, _will_message_len + 1);
 
       return *this;
     }
@@ -55,7 +55,7 @@ namespace MQTT {
     {
       _payload = new uint8_t[_payload_len + 1];
       if (_payload != nullptr)
-	serializeJson(object, _payload, _payload_len + 1);
+        serializeJson(object, _payload, _payload_len + 1);
     }
 
   };

@@ -12,8 +12,8 @@
 #include <ESP8266WiFi.h>
 #include <PubSubClient.h>
 
-const char *ssid =	"xxxxxxxx";		// cannot be longer than 32 characters!
-const char *pass =	"yyyyyyyy";		//
+const char *ssid = "xxxxxxxx"; // cannot be longer than 32 characters!
+const char *pass = "yyyyyyyy";
 
 // Update these with values suitable for your network.
 IPAddress server(172, 16, 0, 2);
@@ -59,4 +59,3 @@ void loop() {
     delay(10000);
   }
 }
-

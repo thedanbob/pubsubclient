@@ -72,8 +72,8 @@ private:
    //! Wait for a certain type of packet to come back, optionally check its packet id
    /*!
      Other packets are handed over to _process_message()
-     \param wait_type	Message type to match on
-     \param wait_pid	Message packet id to match on
+     \param wait_type Message type to match on
+     \param wait_pid Message packet id to match on
      \return The packet we wanted, or nullptr if it didn't arrive
     */
    MQTT::Message*_wait_for(MQTT::message_type wait_type, uint16_t wait_pid = 0);
@@ -123,10 +123,10 @@ public:
      The "will" is a message that is published when this client *unexpectantly*
      disconnects from the broker i.e without sending a DISCONNECT message.
      \param id Client id for this device
-     \param willTopic	Topic of the "will" message
-     \param willQos	QoS level of the "will" message
-     \param willRetain	Retain setting of the "will" message
-     \param willMessage	Content (payload) of the "will" message
+     \param willTopic Topic of the "will" message
+     \param willQos QoS level of the "will" message
+     \param willRetain Retain setting of the "will" message
+     \param willMessage Content (payload) of the "will" message
     */
    bool connect(String id, String willTopic, uint8_t willQos, bool willRetain, String willMessage);
 
