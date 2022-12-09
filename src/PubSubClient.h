@@ -90,7 +90,7 @@ public:
    /*!
      Use set_server() before connect()
    */
-   PubSubClient(Client& c);
+   explicit PubSubClient(Client& c);
 
    //! Constructor with the server ip address
    PubSubClient(Client& c, IPAddress &ip, uint16_t port = 1883);

@@ -82,7 +82,7 @@ namespace MQTT {
     payload_callback_t _payload_callback;
 
     //! Private constructor from type and flags
-    Message(message_type t, uint8_t f = 0) :
+    explicit Message(message_type t, uint8_t f = 0) :
       _type(t), _flags(f),
       _packet_id(0), _need_packet_id(false),
       _stream_client(nullptr),
@@ -184,7 +184,7 @@ namespace MQTT {
     bool _construct_object(void);
 
   public:
-    PacketParser(Client& client);
+    explicit PacketParser(Client& client);
 
   /*!
     remember to free the object once you're finished with it
@@ -209,16 +209,16 @@ namespace MQTT {
 
     uint16_t _keepalive;
 
-    uint32_t variable_header_length(void) const;
-    void write_variable_header(uint8_t *buf, uint32_t& bufpos) const;
-    uint32_t payload_length(void) const;
-    void write_payload(uint8_t *buf, uint32_t& bufpos) const;
+    uint32_t variable_header_length(void) const override;
+    void write_variable_header(uint8_t *buf, uint32_t& bufpos) const override;
+    uint32_t payload_length(void) const override;
+    void write_payload(uint8_t *buf, uint32_t& bufpos) const override;
 
-    message_type response_type(void) const { return CONNACK; }
+    message_type response_type(void) const override { return CONNACK; }
 
   public:
     //! Connect with a client ID
-    Connect(String cid);
+    explicit Connect(String cid);
 
     //! Set the "clear session" flag
     Connect& set_clean_session(bool cs = true) { _clean_session = cs; return *this; }
@@ -272,12 +272,12 @@ namespace MQTT {
     uint8_t *_payload;
     bool _payload_mine;
 
-    uint32_t variable_header_length(void) const;
-    void write_variable_header(uint8_t *buf, uint32_t& bufpos) const;
-    uint32_t payload_length(void) const;
-    void write_payload(uint8_t *buf, uint32_t& bufpos) const;
+    uint32_t variable_header_length(void) const override;
+    void write_variable_header(uint8_t *buf, uint32_t& bufpos) const override;
+    uint32_t payload_length(void) const override;
+    void write_payload(uint8_t *buf, uint32_t& bufpos) const override;
 
-    message_type response_type(void) const;
+    message_type response_type(void) const override;
 
     //! Private constructor from a payload and allowing _payload_mine to be set
     Publish(String topic, uint8_t* payload, uint32_t length, bool mine) :
@@ -372,8 +372,8 @@ namespace MQTT {
   //! Response to Publish when qos == 1
   class PublishAck : public Message {
   private:
-    uint32_t variable_header_length(void) const { return sizeof(_packet_id); }
-    void write_variable_header(uint8_t *buf, uint32_t& bufpos) const { write_packet_id(buf, bufpos); }
+    uint32_t variable_header_length(void) const override { return sizeof(_packet_id); }
+    void write_variable_header(uint8_t *buf, uint32_t& bufpos) const override { write_packet_id(buf, bufpos); }
 
     //! Private constructor from a network buffer
     PublishAck(uint8_t* data, uint32_t length);
@@ -382,7 +382,7 @@ namespace MQTT {
 
   public:
     //! Constructor from a packet id
-    PublishAck(uint16_t pid);
+    explicit PublishAck(uint16_t pid);
 
   };
 
@@ -390,10 +390,10 @@ namespace MQTT {
   //! First response to Publish when qos == 2
   class PublishRec : public Message {
   private:
-    uint32_t variable_header_length(void) const;
-    void write_variable_header(uint8_t *buf, uint32_t& bufpos) const;
+    uint32_t variable_header_length(void) const override;
+    void write_variable_header(uint8_t *buf, uint32_t& bufpos) const override;
 
-    message_type response_type(void) const { return PUBREL; }
+    message_type response_type(void) const override { return PUBREL; }
 
     //! Private constructor from a network buffer
     PublishRec(uint8_t* data, uint32_t length);
@@ -402,7 +402,7 @@ namespace MQTT {
 
   public:
     //! Constructor from a packet id
-    PublishRec(uint16_t pid);
+    explicit PublishRec(uint16_t pid);
 
   };
 
@@ -410,10 +410,10 @@ namespace MQTT {
   //! Response to PublishRec
   class PublishRel : public Message {
   private:
-    uint32_t variable_header_length(void) const;
-    void write_variable_header(uint8_t *buf, uint32_t& bufpos) const;
+    uint32_t variable_header_length(void) const override;
+    void write_variable_header(uint8_t *buf, uint32_t& bufpos) const override;
 
-    message_type response_type(void) const { return PUBCOMP; }
+    message_type response_type(void) const override { return PUBCOMP; }
 
     //! Private constructor from a network buffer
     PublishRel(uint8_t* data, uint32_t length);
@@ -422,7 +422,7 @@ namespace MQTT {
 
   public:
     //! Constructor from a packet id
-    PublishRel(uint16_t pid);
+    explicit PublishRel(uint16_t pid);
 
   };
 
@@ -430,8 +430,8 @@ namespace MQTT {
   //! Response to PublishRel
   class PublishComp : public Message {
   private:
-    uint32_t variable_header_length(void) const;
-    void write_variable_header(uint8_t *buf, uint32_t& bufpos) const;
+    uint32_t variable_header_length(void) const override;
+    void write_variable_header(uint8_t *buf, uint32_t& bufpos) const override;
 
     //! Private constructor from a network buffer
     PublishComp(uint8_t* data, uint32_t length);
@@ -440,7 +440,7 @@ namespace MQTT {
 
   public:
     //! Constructor from a packet id
-    PublishComp(uint16_t pid);
+    explicit PublishComp(uint16_t pid);
 
   };
 
@@ -451,19 +451,19 @@ namespace MQTT {
     uint8_t *_buffer;
     uint32_t _buflen;
 
-    uint32_t variable_header_length(void) const;
-    void write_variable_header(uint8_t *buf, uint32_t& bufpos) const;
-    uint32_t payload_length(void) const;
-    void write_payload(uint8_t *buf, uint32_t& bufpos) const;
+    uint32_t variable_header_length(void) const override;
+    void write_variable_header(uint8_t *buf, uint32_t& bufpos) const override;
+    uint32_t payload_length(void) const override;
+    void write_payload(uint8_t *buf, uint32_t& bufpos) const override;
 
-    message_type response_type(void) const { return SUBACK; }
+    message_type response_type(void) const override { return SUBACK; }
 
   public:
     //! Constructor that starts an empty list of subscriptions
     Subscribe();
 
     //! Constructor from a topic and optional QoS level
-    Subscribe(String topic, uint8_t qos = 0);
+    explicit Subscribe(String topic, uint8_t qos = 0);
 
     ~Subscribe();
 
@@ -508,19 +508,19 @@ namespace MQTT {
     uint8_t *_buffer;
     uint32_t _buflen;
 
-    uint32_t variable_header_length(void) const;
-    void write_variable_header(uint8_t *buf, uint32_t& bufpos) const;
-    uint32_t payload_length(void) const;
-    void write_payload(uint8_t *buf, uint32_t& bufpos) const;
+    uint32_t variable_header_length(void) const override;
+    void write_variable_header(uint8_t *buf, uint32_t& bufpos) const override;
+    uint32_t payload_length(void) const override;
+    void write_payload(uint8_t *buf, uint32_t& bufpos) const override;
 
-    message_type response_type(void) const { return UNSUBACK; }
+    message_type response_type(void) const override { return UNSUBACK; }
 
   public:
     //! Constructor that starts with an empty list of unsubscriptions
     Unsubscribe();
 
     //! Constructor from a topic
-    Unsubscribe(String topic);
+    explicit Unsubscribe(String topic);
 
     ~Unsubscribe();
 
@@ -544,7 +544,7 @@ namespace MQTT {
   //! Ping the broker
   class Ping : public Message {
   private:
-    message_type response_type(void) const { return PINGRESP; }
+    message_type response_type(void) const override { return PINGRESP; }
 
   public:
     //! Constructor
