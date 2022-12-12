@@ -7,6 +7,15 @@
 #include "PubSubClient.h"
 #include <string.h>
 
+#include "ConnectAck.h"
+#include "Disconnect.h"
+#include "Ping.h"
+#include "PingResp.h"
+#include "PublishAck.h"
+#include "PublishRec.h"
+#include "PublishRel.h"
+#include "PublishComp.h"
+
 PubSubClient::PubSubClient(Client& c) :
   _callback(nullptr),
   _client(c),
