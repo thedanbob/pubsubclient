@@ -1,5 +1,15 @@
 #include "PacketParser.h"
 #include "MQTT.h"
+#include "ConnectAck.h"
+#include "Ping.h"
+#include "PingResp.h"
+#include "Publish.h"
+#include "PublishAck.h"
+#include "PublishComp.h"
+#include "PublishRec.h"
+#include "PublishRel.h"
+#include "SubscribeAck.h"
+#include "UnsubscribeAck.h"
 
 namespace MQTT {
   PacketParser::PacketParser(Client& client) :
