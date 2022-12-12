@@ -86,7 +86,8 @@ int test_connect_fails_on_bad_rc() {
   IT("fails to connect if a bad return code is received");
   ShimClient shimClient;
   shimClient.setAllowConnect(true);
-  shimClient.respond(connack, sizeof(connack));
+  byte badConnAck[] = { 0x20, 0x02, 0x00, 0x01 };
+  shimClient.respond(badConnAck, sizeof(badConnAck));
 
   PubSubClient client(shimClient,server, 1883);
   client.set_callback(callback);
