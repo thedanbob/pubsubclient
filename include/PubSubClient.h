@@ -13,12 +13,12 @@
 #endif
 
 #include <Arduino.h>
-#include "MQTT.h"
-#include "Message.h"
-#include "Message/Connect.h"
-#include "Message/Publish.h"
-#include "Message/Subscribe.h"
-#include "Message/Unsubscribe.h"
+#include "MQTT/utils.h"
+#include "MQTT/Message.h"
+#include "MQTT/Message/Connect.h"
+#include "MQTT/Message/Publish.h"
+#include "MQTT/Message/Subscribe.h"
+#include "MQTT/Message/Unsubscribe.h"
 
 //! Main do-everything class that sketches will use
 class PubSubClient {

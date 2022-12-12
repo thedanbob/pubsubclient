@@ -1,6 +1,6 @@
 SRC_PATH=./src
 BLD_PATH=./build
-BLD_DIRS=$(patsubst ../src/%/., build/%, $(wildcard ../src/*/.))
+BLD_DIRS=$(patsubst ../src/%/., build/%, $(wildcard ../src/*/. ../src/*/*/.))
 OUT_PATH=./bin
 
 TEST_SRC=$(wildcard ${SRC_PATH}/*_spec.cpp)
@@ -10,7 +10,7 @@ VPATH=${SRC_PATH}
 SHIM_SRC=$(wildcard ${SRC_PATH}/lib/*.cpp)
 SHIM_OBJS=$(patsubst %.cpp, %.o, ${SHIM_SRC})
 
-PSC_SRC=$(wildcard ../src/*.cpp ../src/*/*.cpp)
+PSC_SRC=$(wildcard ../src/*.cpp ../src/*/*.cpp ../src/*/*/*.cpp)
 PSC_OBJS=$(patsubst ../src/%.cpp, build/%.o, ${PSC_SRC})
 
 CXXFLAGS=-I${SRC_PATH}/lib -I../include -g

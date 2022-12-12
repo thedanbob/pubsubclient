@@ -5,14 +5,14 @@
 */
 
 #include "PubSubClient.h"
-#include "Message/ConnectAck.h"
-#include "Message/Disconnect.h"
-#include "Message/Ping.h"
-#include "Message/PingResp.h"
-#include "Message/PublishAck.h"
-#include "Message/PublishRec.h"
-#include "Message/PublishRel.h"
-#include "Message/PublishComp.h"
+#include "MQTT/Message/ConnectAck.h"
+#include "MQTT/Message/Disconnect.h"
+#include "MQTT/Message/Ping.h"
+#include "MQTT/Message/PingResp.h"
+#include "MQTT/Message/PublishAck.h"
+#include "MQTT/Message/PublishRec.h"
+#include "MQTT/Message/PublishRel.h"
+#include "MQTT/Message/PublishComp.h"
 
 PubSubClient::PubSubClient(Client& c) :
   _callback(nullptr),
