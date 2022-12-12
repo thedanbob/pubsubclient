@@ -15,10 +15,10 @@
 #include <Arduino.h>
 #include "MQTT.h"
 #include "Message.h"
-#include "Connect.h"
-#include "Publish.h"
-#include "Subscribe.h"
-#include "Unsubscribe.h"
+#include "Message/Connect.h"
+#include "Message/Publish.h"
+#include "Message/Subscribe.h"
+#include "Message/Unsubscribe.h"
 
 //! Main do-everything class that sketches will use
 class PubSubClient {
